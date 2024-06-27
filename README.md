@@ -8,11 +8,9 @@ This is an automated bot that helps in afk fishing in the game "HoloCure" (*no I
 3. Run the `HoloCure Fishing Bot` application.
 4. Start the HoloCure game.
 5. Go to "Holo House" and walk to this spot (shown in the pic).
-![image](https://github.com/ChillinRage/HoloCure-Fishing-Bot/assets/73763719/75100385-3130-4b54-a8fb-15405d8961a6)
-<br>
-6. Ensure the game is in full screen mode and the following key binds.
-![image](https://github.com/ChillinRage/HoloCure-Fishing-Bot/assets/73763719/7d4b9d8a-b171-4586-b41d-5abd2ac53dd5)
-<br>
+![image](https://github.com/ChillinRage/HoloCure-Fishing-Bot/assets/73763719/75100385-3130-4b54-a8fb-15405d8961a6)<br>
+6. Ensure the game is in full screen mode and the following key binds (ignoring *cancel/special*). <br>
+ ![image](https://github.com/ChillinRage/HoloCure-Fishing-Bot/assets/73763719/ce9ae1f6-25dc-46f5-ac80-75a2c22f521d)<br>
 7. Initiate the first fishing (by pressing right shift) and press z to start the program.
 8. You're all set.
 
