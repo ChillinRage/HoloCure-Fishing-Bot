@@ -75,6 +75,9 @@ class KeyPresser(threading.Thread):
 
 if __name__ == "__main__":
     print("Starting...")
+    print("Press 'z' to start and stop the program.\n"
+          "Press 'x' to close the program."
+          )
 
     keyboard = Controller()
     main_thread = KeyPresser(keyboard)
