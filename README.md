@@ -16,7 +16,7 @@ This is an automated bot that helps in afk fishing in the game "HoloCure" (*no I
 
 ### FAQ
 **Q:** What's the point of an afk fish farming? <br>
-**A:** You can sell the fishes for in-game credits. It's a reliable way to farm lots of credits while you do something else productive instead.
+**A:** You can sell the fishes for in-game credits. It's a reliable way to farm lots of credits while you do something else productive instead. Also, big numbers go brr.
 
 **Q:** Does this bot have a 100% catch rate? <br>
 **A:** No. This program cannot handle combos above 100 (generally speaking on my pc at least). But failing to make a catch does not break the program (it'll simply continue fishing from combo 1).
