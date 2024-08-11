@@ -1,32 +1,45 @@
-import Colors
-import Keys
-import time
-import threading
+import time, threading, pyautogui
+import Colors, Keys
 from PIL import ImageGrab
 from pynput.keyboard import KeyCode, Controller, Listener
 
 TRIGGER_KEY = KeyCode(char="z") # start/pause program
 EXIT_KEY    = KeyCode(char="x") # close program
 
+WIDTH = pyautogui.size().width
+HEIGHT = pyautogui.size().height
+
+KEY_FRAME_BOX = (
+    int(WIDTH * 0.61),
+    int(HEIGHT * 0.69),
+    int(WIDTH * 0.61) + 25,
+    int(HEIGHT * 0.69) + 10
+)
+
+WHITE_FRAME_BOX = (
+    int(WIDTH * 0.53),
+    int(HEIGHT * 0.72),
+    int(WIDTH * 0.53) + 4,
+    int(HEIGHT * 0.72) + 4
+)
+
 def getImageKey():
-    image = ImageGrab.grab(bbox = (1175, 750, 1200, 760))
-    for x in range(25):
-        for y in range(10):
-            pixel = image.getpixel((x,y))
-            if Colors.isRed(pixel):      return Keys.red
-            elif Colors.isGreen(pixel):  return Keys.green
-            elif Colors.isBlue(pixel):   return Keys.blue
-            elif Colors.isYellow(pixel): return Keys.yellow
-            elif Colors.isPurple(pixel): return Keys.purple
+    '''returns the keyboard key for the current frame'''
+    frame = ImageGrab.grab(bbox = KEY_FRAME_BOX).getdata()
+    for pixel in frame:
+        if Colors.isRed(pixel):      return Keys.red
+        elif Colors.isGreen(pixel):  return Keys.green
+        elif Colors.isBlue(pixel):   return Keys.blue
+        elif Colors.isYellow(pixel): return Keys.yellow
+        elif Colors.isPurple(pixel): return Keys.purple
     return None
 
-def checkOK():
-    image = ImageGrab.grab(bbox = (870, 810, 874, 814))
-    for x in range(4):
-        for y in range(4):
-            pixel = image.getpixel((x,y))
-            if not Colors.isWhite(pixel):
-                return False
+def isWhiteFrame():
+    '''checks if a frame contains only white pixels'''
+    frame = ImageGrab.grab(bbox = WHITE_FRAME_BOX).getdata()
+    for pixel in frame:
+        if not Colors.isWhite(pixel):
+            return False
     return True
 
 def on_press(key):
@@ -49,16 +62,18 @@ class KeyPresser(threading.Thread):
     def resume(self):
         print('Resuming')
         self.running = True
+
     def pause(self):
         print('Pausing')
         self.running = False
+
     def exit(self):
         self.pause()
         self.programRunning = False
 
     def press(self, key):
         self.keyboard.press(key)
-        time.sleep(0.04)
+        time.sleep(0.03)
         self.keyboard.release(key)
 
     def run(self):
@@ -67,17 +82,16 @@ class KeyPresser(threading.Thread):
                 key = getImageKey()
                 if key:
                     self.press(key)
-                elif checkOK(): # check if result screen showing
+                elif isWhiteFrame(): # check if result screen is showing
                     self.press(Keys.enter)
-                    time.sleep(0.8)
+                    time.sleep(0.7)
                     self.press(Keys.enter)
-            time.sleep(0.1)
+            time.sleep(0.05)
+
 
 if __name__ == "__main__":
-    print("Starting...")
-    print("Press 'z' to start and stop the program.\n"
-          "Press 'x' to close the program."
-          )
+    print("Press 'z' to start and stop the program")
+    print("Press 'x' to close the program and window")
 
     keyboard = Controller()
     main_thread = KeyPresser(keyboard)
@@ -85,3 +99,10 @@ if __name__ == "__main__":
 
     with Listener(on_press = on_press) as listener:
         listener.join()
+
+
+    
+    
+
+
+
