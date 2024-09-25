@@ -101,9 +101,3 @@ if __name__ == "__main__":
         listener.join()
 
     print("Closing program...")
-
-    
-    
-
-
-
