@@ -1,5 +1,5 @@
 import time, threading, pyautogui
-import Colors, Keys
+import KeyColors
 from PIL import ImageGrab
 from pynput.keyboard import KeyCode, Controller, Listener
 
@@ -15,7 +15,6 @@ KEY_FRAME_BOX = (
     int(WIDTH * 0.61) + 25,
     int(HEIGHT * 0.69) + 10
 )
-
 WHITE_FRAME_BOX = (
     int(WIDTH * 0.53),
     int(HEIGHT * 0.72),
@@ -27,30 +26,17 @@ def getImageKey():
     '''returns the keyboard key for the current frame'''
     frame = ImageGrab.grab(bbox = KEY_FRAME_BOX).getdata()
     for pixel in frame:
-        if Colors.isRed(pixel):      return Keys.red
-        elif Colors.isGreen(pixel):  return Keys.green
-        elif Colors.isBlue(pixel):   return Keys.blue
-        elif Colors.isYellow(pixel): return Keys.yellow
-        elif Colors.isPurple(pixel): return Keys.purple
+        key = KeyColors.getKeyFromColor(pixel)
+        if key: return key
     return None
 
 def isWhiteFrame():
     '''checks if a frame contains only white pixels'''
     frame = ImageGrab.grab(bbox = WHITE_FRAME_BOX).getdata()
     for pixel in frame:
-        if not Colors.isWhite(pixel):
+        if not KeyColors.isWhite(pixel):
             return False
     return True
-
-def on_press(key):
-    if key == TRIGGER_KEY:
-        if main_thread.running:
-            main_thread.pause()
-        else:
-            main_thread.resume()
-    elif key == EXIT_KEY:
-        main_thread.exit()
-        listener.stop()
 
 class KeyPresser(threading.Thread):
     def __init__(self, keyboard):
@@ -76,18 +62,32 @@ class KeyPresser(threading.Thread):
         time.sleep(0.03)
         self.keyboard.release(key)
 
+    def checkFrame(self):
+        key = getImageKey()
+        if key:
+            self.press(key)
+        elif isWhiteFrame(): # check if result screen is showing
+            self.press(KeyColors.ENTER)
+            time.sleep(0.7)
+            self.press(KeyColors.ENTER)
+
     def run(self):
         while self.programRunning:
             while self.running:
-                key = getImageKey()
-                if key:
-                    self.press(key)
-                elif isWhiteFrame(): # check if result screen is showing
-                    self.press(Keys.enter)
-                    time.sleep(0.7)
-                    self.press(Keys.enter)
-            time.sleep(0.05)
+                threading.Thread(target=self.checkFrame, args=()).start()
+                time.sleep(0.02)
+            time.sleep(0.1)
 
+def on_press(key):
+    if key == TRIGGER_KEY:
+        if main_thread.running:
+            main_thread.pause()
+        else:
+            main_thread.resume()
+
+    elif key == EXIT_KEY:
+        main_thread.exit()
+        listener.stop()
 
 if __name__ == "__main__":
     print("Press 'z' to start and stop the program")
@@ -100,6 +100,7 @@ if __name__ == "__main__":
     with Listener(on_press = on_press) as listener:
         listener.join()
 
+    print("Closing program...")
 
     
     
